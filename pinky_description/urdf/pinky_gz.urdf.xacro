@@ -1,21 +1,54 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:macro name="insert_gz_sim" params="namespace">
+    <xacro:macro name="insert_gz_sim" params="namespace ros2_control">
+        
         <gazebo>
-            <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-                <ros>
-                    <namespace>${namespace}</namespace>
-                    <remapping>base_controller/cmd_vel:=cmd_vel</remapping> 
-                    <remapping>base_controller/odom:=odom</remapping> 
-                </ros>
-                <parameters>$(find pinky_bringup)/config/pinky_controllers.yaml</parameters>
-            </plugin>
+            <xacro:if value="${ros2_control}">
+                <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+                    <ros>
+                        <namespace>${namespace}</namespace>
+                        <remapping>base_controller/cmd_vel:=cmd_vel</remapping> 
+                        <remapping>base_controller/odom:=odom</remapping> 
+                    </ros>
+                    <parameters>$(find pinky_bringup)/config/pinky_controllers.yaml</parameters>
+                </plugin>
+            </xacro:if>
+
+            <xacro:unless value="${ros2_control}">
+                <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+                    <left_joint>${namespace}l_wheel_joint</left_joint>
+                    <right_joint>${namespace}r_wheel_joint</right_joint>
+                    <wheel_separation>0.0961</wheel_separation>
+                    <wheel_radius>0.028</wheel_radius>
+
+                    <min_velocity>-1.0</min_velocity>
+                    <max_velocity>1.0</max_velocity>
+
+                    <min_acceleration>-2.0</min_acceleration>
+                    <max_acceleration>2.0</max_acceleration>  
+                    <topic>${namespace}cmd_vel</topic>
+                    
+                    <odom_topic>${namespace}odom</odom_topic>
+                    <frame_id>${namespace}odom</frame_id>
+                    <child_frame_id>${namespace}base_footprint</child_frame_id>
+                    <odom_publisher_frequency>30</odom_publisher_frequency>
+
+                    <tf_topic>/tf</tf_topic>
+                </plugin>
+
+                <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+                    <topic>${namespace}joint_states</topic>
+                    <joint_name>${namespace}l_wheel_joint</joint_name>
+                    <joint_name>${namespace}r_wheel_joint</joint_name>
+                </plugin>
+            </xacro:unless>
+            
             <plugin filename="gz-sim-lamp-control-system" name="pinky_gz_sim::LampControlPlugin">
-                <link>robot_lamp</link>
+                <link>${namespace}robot_lamp</link>
             </plugin>
         </gazebo>
 
-        <gazebo reference="l_wheel">
+        <gazebo reference="${namespace}l_wheel">
             <self_collide>0</self_collide>
             <mu1>200</mu1>
             <mu2>200</mu2>
@@ -24,7 +57,7 @@
             <!-- <minDepth>0.001</minDepth> -->
         </gazebo>
 
-        <gazebo reference="r_wheel">
+        <gazebo reference="${namespace}r_wheel">
             <self_collide>0</self_collide>
             <mu1>200</mu1>
             <mu2>200</mu2>
@@ -33,7 +66,7 @@
             <!-- <minDepth>0.001</minDepth> -->
         </gazebo>
 
-        <gazebo reference="caster_wheel">
+        <gazebo reference="${namespace}caster_wheel">
             <self_collide>0</self_collide>
             <mu1>0.1</mu1>
             <mu2>0.1</mu2>
@@ -42,14 +75,15 @@
             <!-- <minDepth>0.001</minDepth> -->
         </gazebo>
 
-        <gazebo reference="robot_lamp_mount_fixed_joint">
+        <gazebo reference="${namespace}robot_lamp_mount_fixed_joint">
             <disableFixedJointLumping>true</disableFixedJointLumping>
         </gazebo>
 
-        <gazebo reference="rplidar_link">
-            <sensor name='gpu_lidar' type='gpu_lidar'>
-                <topic>${namespace}/scan</topic>
+        <gazebo reference="${namespace}rplidar_link">
+            <sensor name='${namespace}gpu_lidar' type='gpu_lidar'>
+                <topic>${namespace}scan</topic>
                 <update_rate>10</update_rate>
+                <gz_frame_id>${namespace}rplidar_link</gz_frame_id>
                 <lidar>
                     <scan>
                         <horizontal>
@@ -80,8 +114,8 @@
             </sensor>
         </gazebo>
 
-        <gazebo reference="front_camera_link">
-            <sensor name="camera" type="camera">
+        <gazebo reference="${namespace}front_camera_link">
+            <sensor name="${namespace}camera" type="camera">
                 <camera>
                     <horizontal_fov>1.1519</horizontal_fov>
                     <image>
@@ -96,17 +130,19 @@
                 <always_on>1</always_on>
                 <update_rate>30</update_rate>
                 <visualize>true</visualize>
-                <topic>camera/image_raw</topic>
+                <topic>${namespace}camera/image_raw</topic>
+                <gz_frame_id>${namespace}front_camera_link</gz_frame_id>
             </sensor>
         </gazebo>
 
-        <gazebo reference="imu_link">
-            <sensor name="imu" type="imu">
+        <gazebo reference="${namespace}imu_link">
+            <sensor name="${namespace}imu" type="imu">
                 <always_on>1</always_on>
                 <update_rate>100</update_rate>
                 <visualize>true</visualize>
-                <topic>imu_raw</topic>
+                <topic>${namespace}imu_raw</topic>
                 <enable_metrics>true</enable_metrics>
+                <gz_frame_id>${namespace}imu_link</gz_frame_id>
             </sensor>
         </gazebo>
     </xacro:macro>
