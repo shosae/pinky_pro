@@ -105,17 +105,15 @@
     <name>shelf_4</name>
     <pose>1.4 0.5 0 0 0 0</pose>
   </include>
-  
-
 
   <model name="robot_arm_box">
     <static>true</static>
-    <pose>1.7 0 0 0 0 0</pose>
+    <pose>1.7 0 0.1 0 0 0</pose>
     <link name="robot_arm_box">
       <visual name="robot_arm_box_visual">
         <geometry>
           <box>
-            <size>0.15 0.15 0.22</size>
+            <size>0.15 0.15 0.20</size>
           </box>
         </geometry>
         <material>
