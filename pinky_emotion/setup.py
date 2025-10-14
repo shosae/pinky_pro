@@ -22,7 +22,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            "pinky_emotion=pinky_emotion.pinky_emotion:main"
+            "pinky_emotion=pinky_emotion.pinky_emotion:main",
+            "emotion_server=pinky_emotion.emotion_server:main"
         ],
     },
 )
