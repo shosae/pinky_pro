@@ -91,6 +91,8 @@ class LCD():
         self._write_data_buffer([0x00, 0x23, 0x24, 0x07, 0x10, 0x07, 0x38, 0x47, 0x4B, 0x0A, 0x13, 0x06, 0x30, 0x38, 0x0F])
         
         self._write_cmd(0x29) # Display on
+        
+        self.clear()
 
     def _set_windows(self, start_x, start_y, end_x, end_y):
         self._write_cmd(0x2A) # Column Address Set
