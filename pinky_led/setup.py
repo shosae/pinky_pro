@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'pinky_screen_control'
+package_name = 'pinky_led'
 
 setup(
     name=package_name,
@@ -13,14 +13,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='robot',
-    maintainer_email='byeongkyu@gmail.com',
+    maintainer='pl3',
+    maintainer_email='kyung133851@pinklab.art',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'main_node = pinky_screen_control.main_node:main'
+            'led_server=pinky_led.led_server:main'
         ],
     },
 )

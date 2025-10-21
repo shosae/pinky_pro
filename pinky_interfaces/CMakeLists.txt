@@ -18,7 +18,7 @@ set(
 
 set(
   SRV_FILES
-  "srv/SetLamp.srv"
+  "srv/SetLed.srv"
   "srv/Emotion.srv"
 )
 
