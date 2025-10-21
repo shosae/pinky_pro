@@ -20,6 +20,7 @@ set(
   SRV_FILES
   "srv/SetLed.srv"
   "srv/Emotion.srv"
+  "srv/SetBrightness.srv"
 )
 
 set(
