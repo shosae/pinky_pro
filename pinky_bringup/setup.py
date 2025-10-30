@@ -22,7 +22,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'bringup=pinky_bringup.bringup:main'
+            'bringup=pinky_bringup.bringup:main',
+            'battery_publisher=pinky_bringup.battery_publisher:main'
         ],
     },
 )

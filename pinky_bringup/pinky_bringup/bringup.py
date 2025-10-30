@@ -10,6 +10,7 @@ from nav_msgs.msg import Odometry
 from sensor_msgs.msg import JointState
 from tf2_ros import TransformBroadcaster
 from tf_transformations import quaternion_from_euler
+from std_msgs.msg import Float32
 
 from .dynamixel_driver import DynamixelDriver
 
@@ -31,6 +32,9 @@ PULSE_PER_ROT = 4096
 WHEEL_BASE = 0.0961
 RPM2RAD = 2 * math.pi / 60
 CIRCUMFERENCE = 2 * math.pi * WHEEL_RAD
+
+BATTERY_VOLTAGE_TOPIC = "battery/voltage"
+LOW_BATTERY_THRESHOLD = 6.8
 
 class Pinky(Node):
     def __init__(self):
@@ -74,6 +78,13 @@ class Pinky(Node):
         self.twist_sub = self.create_subscription(Twist, TWIST_SUB_TOPIC_NAME, self.twist_callback, 10)
         self.tf_broadcaster = TransformBroadcaster(self)
         self.timer = self.create_timer(1.0 / 30.0, self.update_and_publish)
+
+        self.battery_sub = self.create_subscription(
+            Float32,
+            BATTERY_VOLTAGE_TOPIC,
+            self.battery_voltage_callback,
+            10
+        )
 
         self.x = 0.0
         self.y = 0.0
@@ -175,10 +186,16 @@ class Pinky(Node):
 
         self.joint_pub.publish(joint_msg)
 
-    def on_shutdown(self):
-        self.get_logger().info("Shutting down, terminating motor driver...")
-        if hasattr(self, 'driver') and self.is_initialized:
-            self.driver.terminate()
+    def battery_voltage_callback(self, msg):
+        self.current_voltage = msg.data
+        
+        if self.current_voltage is None:
+            self.get_logger().warn("Battery voltage data has not been received yet.")
+        elif self.current_voltage <= LOW_BATTERY_THRESHOLD:
+            self.get_logger().warn(
+                f"!!! LOW BATTERY WARNING !!! Voltage: {self.current_voltage:.2f}V. Please charge the robot."
+            )
+
 
 def main(args=None):
     rclpy.init(args=args)
