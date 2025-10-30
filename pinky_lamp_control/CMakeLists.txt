@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
-project(pinky_interfaces)
+project(pinky_lamp_control)
+
+set(CMAKE_CXX_STANDARD 20)
+
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -7,35 +10,29 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
-find_package(action_msgs REQUIRED)
-find_package(builtin_interfaces REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
+find_package(pinky_interfaces REQUIRED)
 
-set(
-  MSG_FILES
-)
 
-set(
-  SRV_FILES
-  "srv/SetLed.srv"
-  "srv/Emotion.srv"
-  "srv/SetBrightness.srv"
-  "srv/SetLamp.srv"
-)
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+  add_executable(main_node src/main_node.cpp)
+  ament_target_dependencies(main_node rclcpp std_msgs pinky_interfaces)
+  target_include_directories(main_node
+    PUBLIC
+    /usr/local/include
+  )
+  target_link_libraries(main_node
+    ws2811
+  )
 
-set(
-  ACTION_FILES
-)
-
-rosidl_generate_interfaces(
-  ${PROJECT_NAME}
-  ${MSG_FILES}
-  ${SRV_FILES}
-  ${ACTION_FILES}
-  DEPENDENCIES builtin_interfaces std_msgs action_msgs
-)
-
+  install(TARGETS
+    main_node
+    DESTINATION lib/${PROJECT_NAME}
+  )
+else()
+  message(STATUS "${PROJECT_NAME} build only for ARM64. Skip building.")
+endif()
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
