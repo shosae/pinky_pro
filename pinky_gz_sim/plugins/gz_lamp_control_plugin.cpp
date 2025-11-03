@@ -62,7 +62,7 @@ void LampControlPlugin::PreUpdate(const gz::sim::UpdateInfo &_info,
         }
         last_update_time_ = currentTime;
 
-        auto pub = node_.Advertise<gz::msgs::MaterialColor>("/world/default/material_color");
+        auto pub = node_.Advertise<gz::msgs::MaterialColor>("/world/pinky_factory/material_color");
         pub.Publish(materialColorMsgFirst);
     }
 }

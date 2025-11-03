@@ -26,10 +26,7 @@
     <plugin filename="gz-sim-imu-system"
         name="gz::sim::systems::Imu">
     </plugin>
-    <plugin filename="gz-sim-lamp-control-system" name="pinky_gz_sim::LampControlPlugin">
-        <link>robot_lamp</link>
-    </plugin>
-
+    
     <!--light-->
     <light type="directional" name="sun">
       <cast_shadows>false</cast_shadows>
