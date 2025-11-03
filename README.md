@@ -10,13 +10,15 @@ ROS2 packages for Pinky Pro
 ## 환경
 - ubuntu 24.04
 - ros2 jazzy
+- x86_64 (amd64) (recommended)
+    - (ARM64 환경의 경우 [관련 문서](doc/arm64_guide.md)를 참고하세요.)
 ## 1. Pinky Pro ROS2 pkg clone
 ```
 mkdir -p ~/pinky_pro/src
 cd ~/pinky_pro/src
 git clone https://github.com/pinklab-art/pinky_pro.git
 ```
-## 2. dependence 설치
+## 2. dependency 설치
 ```
 cd ~/pinky_pro
 rosdep install --from-paths src --ignore-src -r -y
