@@ -4,13 +4,21 @@ from ament_index_python.packages import get_package_share_directory
 from PIL import Image, ImageSequence
 import os
 import threading
-
 from pinky_interfaces.srv import Emotion
 from .pinky_lcd import LCD
 
 class PinkyEmotion(Node):
     def __init__(self):
         super().__init__('pinky_emotion')
+
+        self.declare_parameter('load_frame_skip', 2) 
+        self.declare_parameter('play_frame_skip', 1)
+
+        self.load_frame_skip = self.get_parameter('load_frame_skip').get_parameter_value().integer_value 
+        self.play_frame_skip = self.get_parameter('play_frame_skip').get_parameter_value().integer_value
+
+        self.get_logger().info(f"load_frame_skip: {self.load_frame_skip} frame")
+        self.get_logger().info(f"play_frame_skip: {self.play_frame_skip} frame")
 
         self.emotion_path = os.path.join(get_package_share_directory('pinky_emotion'), 'emotion')
         self.emotion_service = self.create_service(Emotion, 'set_emotion', self.set_emotion_callback)
@@ -21,14 +29,14 @@ class PinkyEmotion(Node):
         self.gif_lock = threading.Lock() 
         
         self.emotion_cache = {}  
-        self._preload_gifs()
+        self._preload_gifs() 
 
         self.animation_timer = self.create_timer(0.1, self.timer_callback)
 
         self.get_logger().info("Pinky's emotion server is ready!! All GIFs pre-loaded.")
 
         with self.gif_lock:
-            self.gif_frames = self.emotion_cache.get("basic", [])
+            self.gif_frames = self.emotion_cache.get("happy", [])
 
     def _preload_gifs(self):
         self.get_logger().info("Pre-loading all emotion GIFs into memory...")
@@ -41,7 +49,7 @@ class PinkyEmotion(Node):
                 img = Image.open(file_path)
                 frames = []
                 for i, frame in enumerate(ImageSequence.Iterator(img)):
-                    if i % 2 == 0: 
+                    if i % self.load_frame_skip == 0: 
                         frames.append(frame.copy().convert("RGB"))
                 
                 self.emotion_cache[emotion_name] = frames
@@ -72,7 +80,7 @@ class PinkyEmotion(Node):
             frame_to_show = self.gif_frames[self.current_frame_index]
             self.lcd.img_show(frame_to_show)
 
-            self.current_frame_index = (self.current_frame_index + 1) % len(self.gif_frames)
+            self.current_frame_index = (self.current_frame_index + self.play_frame_skip) % len(self.gif_frames) # <--- 4. 이름 변경
 
 
 def main(args=None):

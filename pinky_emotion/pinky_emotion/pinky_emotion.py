@@ -11,76 +11,51 @@ class PinkyEmotion(Node):
     def __init__(self):
         super().__init__('pinky_emotion')
 
-        self.declare_parameter('load_frame_skip', 2) 
-        self.declare_parameter('play_frame_skip', 1)
-
-        self.load_frame_skip = self.get_parameter('load_frame_skip').get_parameter_value().integer_value 
-        self.play_frame_skip = self.get_parameter('play_frame_skip').get_parameter_value().integer_value
-
-        self.get_logger().info(f"load_frame_skip: {self.load_frame_skip} frame")
-        self.get_logger().info(f"play_frame_skip: {self.play_frame_skip} frame")
-
         self.emotion_path = os.path.join(get_package_share_directory('pinky_emotion'), 'emotion')
         self.emotion_service = self.create_service(Emotion, 'set_emotion', self.set_emotion_callback)
         self.lcd = LCD()
-        
-        self.gif_frames = []
-        self.current_frame_index = 0
-        self.gif_lock = threading.Lock() 
-        
-        self.emotion_cache = {}  
-        self._preload_gifs() 
+        self.get_logger().info(f"Pinky's emotion server is ready!!")
 
-        self.animation_timer = self.create_timer(0.1, self.timer_callback)
-
-        self.get_logger().info("Pinky's emotion server is ready!! All GIFs pre-loaded.")
-
-        with self.gif_lock:
-            self.gif_frames = self.emotion_cache.get("happy", [])
-
-    def _preload_gifs(self):
-        self.get_logger().info("Pre-loading all emotion GIFs into memory...")
-        try:
-            gif_files = [f for f in os.listdir(self.emotion_path) if f.endswith('.gif')]
-            for gif_file in gif_files:
-                emotion_name = os.path.splitext(gif_file)[0]
-                file_path = os.path.join(self.emotion_path, gif_file)
-                
-                img = Image.open(file_path)
-                frames = []
-                for i, frame in enumerate(ImageSequence.Iterator(img)):
-                    if i % self.load_frame_skip == 0: 
-                        frames.append(frame.copy().convert("RGB"))
-                
-                self.emotion_cache[emotion_name] = frames
-                self.get_logger().info(f"  - Cached '{emotion_name}' ({len(frames)} frames)")
-        except Exception as e:
-            self.get_logger().error(f"Failed during GIF pre-loading: {e}")
-
-    def set_emotion_callback(self, request, response):
+    def lcd_callback(self, request, response):
         emo = request.emotion
-        self.get_logger().info(f"Request to set emotion to '{emo}'")
+        self.get_logger().info(f"Pinky's emotion set to {emo}")
+        response.response = f"Pinky's emotion set to {emo}"
+        
+        if emo == "hello":
+            self.play_gif(self.emotion_path + "/hello.gif")
+        
+        elif emo == "basic":
+            self.play_gif(self.emotion_path + "/basic.gif")
+        
+        elif emo == "angry":
+            self.play_gif(self.emotion_path + "/angry.gif")
+        
+        elif emo == "bored":
+            self.play_gif(self.emotion_path + "/bored.gif")
 
-        if emo in self.emotion_cache:
-            with self.gif_lock:
-                self.gif_frames = self.emotion_cache[emo]
-                self.current_frame_index = 0
-            response.response = f"Emotion set to {emo}"
+        elif emo == "fun":
+            self.play_gif(self.emotion_path + "/fun.gif")
+            
+        elif emo == "happy":
+            self.play_gif(self.emotion_path + "/happy.gif")
+
+        elif emo == "interest":
+            self.play_gif(self.emotion_path + "/interest.gif")
+
+        elif emo == "sad":
+            self.play_gif(self.emotion_path + "/sad.gif")
+
         else:
             response.response = "Wrong command or emotion not cached"
             self.get_logger().warn(f"Emotion '{emo}' not found in cache.")
 
         return response
 
-    def timer_callback(self):
-        with self.gif_lock:
-            if not self.gif_frames:
-                return
-
-            frame_to_show = self.gif_frames[self.current_frame_index]
-            self.lcd.img_show(frame_to_show)
-
-            self.current_frame_index = (self.current_frame_index + self.play_frame_skip) % len(self.gif_frames) # <--- 4. 이름 변경
+    def play_gif(self, path):
+        img = Image.open(path)
+        for i, frame in enumerate(ImageSequence.Iterator(img)):
+            if i % 2 == 0:
+                self.lcd.img_show(frame)
 
 
 def main(args=None):
