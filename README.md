@@ -104,3 +104,42 @@ ros2 launch pinky_navigation bringup_launch.xml map:=<map name> use_sim_time:=tr
 ```
 ros2 launch pinky_navigation nav2_view.launch.xml
 ```
+
+# 센서 동작
+## LED contorl
+### LED server start
+```
+ros2 launch pinky_navigation bringup_launch.xml map:=<map name> use_sim_time:=true
+```
+### LED service call
+#### fill with color
+```
+ros2 service call /set_led pinky_interfaces/srv/SetLed "{command: 'fill', r: 255, g: 0, b: 0}"
+```
+#### set pixel colors
+```
+ros2 service call /set_led pinky_interfaces/srv/SetLed "{command: 'set_pixel', pixels: [4, 5, 6, 7], r: 0, g: 0, b: 255}"
+```
+#### clear
+```
+ros2 service call /set_led pinky_interfaces/srv/SetLed "{command: 'clear'}"
+```
+#### set brightness
+```
+ros2 service call /set_brightness pinky_interfaces/srv/SetBrightness "{brightness: 10}"
+```
+## LCD contorl
+### emotion server start
+```
+ros2 run pinky_emotion emotion_server
+```
+or
+```
+ros2 run pinky_emotion emotion_server --ros-args -p load_frame_skip:=3
+```
+
+### set emotion
+Available emotions: (hello, basic, angry, bored, fun, happy, interest, sad)
+```
+ros2 service call /set_emotion pinky_interfaces/srv/Emotion "{emotion: 'happy'}"
+```
