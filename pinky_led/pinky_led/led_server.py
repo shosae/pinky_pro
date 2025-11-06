@@ -13,12 +13,12 @@ class LedServiceServer(Node):
 
         self.led_service = self.create_service(SetLed, 'set_led', self.set_led_callback)
         self.brightness_service = self.create_service(SetBrightness, 'set_brightness', self.set_brightness_callback)
-        self.get_logger().info('LED 제어 서비스 서버가 준비되었습니다.')
+        self.get_logger().info('LED control service server is ready.')
 
     def set_led_callback(self, request, response):
         if self.led is None:
             response.success = False
-            response.message = "LED 객체가 초기화되지 않았습니다."
+            response.message = "LED object is not initialized."
             return response
 
         command = request.command.lower()
@@ -31,31 +31,31 @@ class LedServiceServer(Node):
                 
                 self.led.show()
                 response.success = True
-                response.message = f"픽셀 {request.pixels} 색상을 {color}로 변경했습니다."
+                response.message = f"Set pixel(s) {request.pixels} to color {color}."
             
             elif command == 'fill':
                 self.led.fill(color)
                 response.success = True
-                response.message = f"전체 LED 색상을 {color}로 변경했습니다."
+                response.message = f"Filled all LEDs with color {color}."
 
             elif command == 'clear':
                 self.led.clear()
                 response.success = True
-                response.message = "모든 LED를 종료했습니다."
+                response.message = "Cleared all LEDs."
             
             else:
                 response.success = False
-                response.message = f"실패: 알 수 없는 명령입니다. ('set_pixel', 'fill', 'clear' 사용 가능)"
+                response.message = f"Failed: Unknown command. Available commands: 'set_pixel', 'fill', 'clear'."
 
             self.get_logger().info(response.message)
 
         except IndexError as e:
             response.success = False
-            response.message = f"실패: {str(e)}"
+            response.message = f"Failed: {str(e)}"
             self.get_logger().error(response.message)
         except Exception as e:
             response.success = False
-            response.message = f"실패: LED 제어 중 에러 발생 - {str(e)}"
+            response.message = f"Failed: Error during LED control - {str(e)}"
             self.get_logger().error(response.message)
 
         return response
@@ -63,18 +63,18 @@ class LedServiceServer(Node):
     def set_brightness_callback(self, request, response):
         if self.led is None:
             response.success = False
-            response.message = "LED 객체가 초기화되지 않았습니다."
+            response.message = "LED object is not initialized."
             return response
 
         try:
             self.led.set_brightness(request.brightness)
             response.success = True
-            response.message = f"LED 밝기를 {request.brightness}로 설정했습니다."
+            response.message = f"Set LED brightness to {request.brightness}."
             self.get_logger().info(response.message)
         
         except (ValueError, Exception) as e:
             response.success = False
-            response.message = f"실패: 밝기 제어 중 에러 발생 - {str(e)}"
+            response.message = f"Failed: Error during brightness control - {str(e)}"
             self.get_logger().error(response.message)
         return response
 
