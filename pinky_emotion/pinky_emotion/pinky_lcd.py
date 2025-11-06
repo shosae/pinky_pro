@@ -26,10 +26,9 @@ class LCD():
         self.bl = GPIO.PWM(BL_PIN, 1000)
         self.bl.start(100)  # 백라이트 밝기 100%로 시작
 
-        # SPI 초기화 
         self.spi = spidev.SpiDev()
-        self.spi.open(0, 0) # bus=0, device=0 (CE0)
-        self.spi.max_speed_hz = 80000000 # 40MHz
+        self.spi.open(0, 0)
+        self.spi.max_speed_hz = 125000000
         self.spi.mode = 0b00
 
         self.lcd_init()
@@ -44,7 +43,7 @@ class LCD():
 
     def _write_data_buffer(self, buf):
         GPIO.output(DC_PIN, GPIO.HIGH)
-        self.spi.writebytes(buf)
+        self.spi.writebytes2(buf)
 
     def reset(self):
         GPIO.output(RST_PIN, GPIO.HIGH)
@@ -119,14 +118,13 @@ class LCD():
         pixel[..., [0]] = np.add(np.bitwise_and(image[..., [0]], 0xF8), np.right_shift(image[..., [1]], 5))
         pixel[..., [1]] = np.add(np.bitwise_and(np.left_shift(image[..., [1]], 3), 0xE0), np.right_shift(image[..., [2]], 3))
         
-        pixel = pixel.flatten().tolist()
+        pixel_bytes = pixel.tobytes()
         
         self._write_cmd(0x36)
         self._write_data(0x08)
         self._set_windows(0, 0, self.w, self.h)
         
-        for i in range(0, len(pixel), 4096):
-            self._write_data_buffer(pixel[i:i+4096])
+        self._write_data_buffer(pixel)
 
     def clear(self, color=0x0000):
         color_high = color >> 8

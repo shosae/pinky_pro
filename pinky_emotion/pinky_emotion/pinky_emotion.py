@@ -11,10 +11,15 @@ class PinkyEmotion(Node):
     def __init__(self):
         super().__init__('pinky_emotion')
 
+        self.declare_parameter('play_frame_skip', 2)
+        self.play_frame_skip = self.get_parameter('play_frame_skip').get_parameter_value().integer_value
+
         self.emotion_path = os.path.join(get_package_share_directory('pinky_emotion'), 'emotion')
         self.emotion_service = self.create_service(Emotion, 'set_emotion', self.lcd_callback)
 
         self.lcd = LCD()
+        
+        self.get_logger().info(f"Using play_frame_skip: {self.play_frame_skip}")
         self.get_logger().info(f"Pinky's emotion server is ready!!")
 
     def lcd_callback(self, request, response):
@@ -57,7 +62,7 @@ class PinkyEmotion(Node):
     def play_gif(self, path):
         img = Image.open(path)
         for i, frame in enumerate(ImageSequence.Iterator(img)):
-            if i % 2 == 0:
+            if i % self.play_frame_skip == 0:
                 self.lcd.img_show(frame)
 
         
