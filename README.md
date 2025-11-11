@@ -109,7 +109,7 @@ ros2 launch pinky_navigation nav2_view.launch.xml
 ```
 
 # 센서 동작
-## LED contorl
+## LED control
 ### LED server start
 ```
 ros2 launch pinky_navigation bringup_launch.xml map:=<map name> use_sim_time:=true
@@ -131,7 +131,7 @@ ros2 service call /set_led pinky_interfaces/srv/SetLed "{command: 'clear'}"
 ```
 ros2 service call /set_brightness pinky_interfaces/srv/SetBrightness "{brightness: 10}"
 ```
-## LCD contorl
+## LCD control
 ### emotion server start
 ```
 ros2 run pinky_emotion emotion_server
