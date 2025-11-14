@@ -1,21 +1,31 @@
-# pinky_pro
+# Pinky Pro
 ROS2 packages for Pinky Pro
 
-[참고 자료] https://drive.google.com/drive/folders/1MeBp7xXAmHrNdEJYtsQ25DtCSrlwyAwC 
 
+
+## 📚 참고 자료 (Resources)
+
+* **[수업 자료 (Google Drive)](https://drive.google.com/drive/folders/1MeBp7xXAmHrNdEJYtsQ25DtCSrlwyAwC)**
+
+* **[Pinky Assistants (chatGPT)](https://chatgpt.com/g/g-69141c60b0908191975d16ce2421b768-pinky-pro-assistants)**
 
 ## 🙏 Special Thanks · Contributors
 
 **[byeongkyu](https://github.com/byeongkyu)** – Pinky PRO 모델 ROS 2 패키지 개발  
 참고 레포지토리: [pinky_robot](https://github.com/byeongkyu/pinky_robot)
 
-# PC 설정
+# 💻 PC 설정
+
 ## 환경
-- ubuntu 24.04
-- ros2 jazzy
-- x86_64 (amd64) (recommended)
-    - (ARM64 환경의 경우 [관련 문서](doc/arm64_guide.md)를 참고하세요.)
+* **OS:** Ubuntu 24.04
+* **ROS:** ROS2 Jazzy
+* **Architecture:** x86\_64 (amd64) (Recommended)
+    * (ARM64 환경의 경우 [관련 문서](doc/arm64_guide.md)를 참고하세요.)
+
+---
+
 ## 1. Pinky Pro ROS2 pkg clone
+
 ```
 mkdir -p ~/pinky_pro/src
 cd ~/pinky_pro/src
