@@ -7,7 +7,7 @@ ROS2 packages for Pinky Pro
 
 * **[수업 자료 (Google Drive)](https://drive.google.com/drive/folders/1MeBp7xXAmHrNdEJYtsQ25DtCSrlwyAwC)**
 
-* **[Pinky Assistants (chatGPT)](https://chatgpt.com/g/g-69141c60b0908191975d16ce2421b768-pinky-pro-assistants)**
+* **[Pinky Assistants (ChatGPT)](https://chatgpt.com/g/g-69141c60b0908191975d16ce2421b768-pinky-pro-assistants)**
 
 ## 🙏 Special Thanks · Contributors
 
