@@ -1,7 +1,11 @@
 # Pinky Pro
 ROS2 packages for Pinky Pro
 
+![Pinky Pro](doc/pinky_pro_image.png)
+---
+### Pinky Pro ROS2 아키텍처
 
+![Pinky Pro ROS2 아키텍처](doc/architecture.png)
 
 ## 📚 참고 자료 (Resources)
 
