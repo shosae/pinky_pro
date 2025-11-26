@@ -79,8 +79,8 @@
             <disableFixedJointLumping>true</disableFixedJointLumping>
         </gazebo>
 
-        <gazebo reference="${namespace}rplidar_link">
-            <sensor name='${namespace}gpu_lidar' type='gpu_lidar'>
+        <gazebo reference="rplidar_link">
+            <sensor name='gpu_lidar' type='gpu_lidar'>
                 <topic>${namespace}scan</topic>
                 <update_rate>10</update_rate>
                 <gz_frame_id>${namespace}rplidar_link</gz_frame_id>

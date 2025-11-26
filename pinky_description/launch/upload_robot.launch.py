@@ -16,9 +16,7 @@ def generate_launch_description():
     sim_type = DeclareLaunchArgument("sim_type", default_value="gz_sim")
     cam_tilt_deg = DeclareLaunchArgument("cam_tilt_deg", default_value="0")
 
-    namespace = PythonExpression([
-        "'", LaunchConfiguration('namespace'), "' + ('/' if '", LaunchConfiguration('namespace'), "' != '' else '')"
-    ])
+    namespace = LaunchConfiguration('namespace')
 
     rsp_node = Node(
         package='robot_state_publisher',
@@ -40,7 +38,7 @@ def generate_launch_description():
                     ' sim_type:=', LaunchConfiguration('sim_type'),
                     ' cam_tilt_deg:=', LaunchConfiguration('cam_tilt_deg')
                 ]),
-            'frame_prefix': [namespace],
+            'frame_prefix': [namespace],   
         }]
     )
 
