@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from megacity_interfaces.msg import Pose
+from pinky_interfaces.msg import Pose
 from geometry_msgs.msg import PoseWithCovarianceStamped, Twist
 from std_msgs.msg import Float64, String
 from rcl_interfaces.msg import SetParametersResult
 from nav_msgs.msg import Odometry, Path
-from megacity_navigation.control_apps import PID
+from pinky_rtr.control_apps import PID
 from tf_transformations import euler_from_quaternion
 from sensor_msgs.msg import LaserScan
 import math
@@ -344,16 +344,6 @@ class GoalController(Node):
         self.add_on_set_parameters_callback(self.parameter_callback)
 
         self.create_subscription(LaserScan, 'scan', self.laser_callback, 10)
-
-        # 장애물 인식 파라미터
-        self.declare_parameter('front_angle_deg', 30) # 전방 라이다각도 ±
-        self.declare_parameter('base_distance', 0.1) # 기본 감지 거리
-        self.declare_parameter('scale', 1.0) # 속도 scale
-        self.declare_parameter('speed_threshold', 0.1) # 속도 임계값(직진 판단)      
-        self.declare_parameter('min_cluster_size', 3) # 장애물 인식 크기
-        self.declare_parameter('detection_threshold', 3) # 장애물 감지 threshold
-        self.declare_parameter('clear_threshold', 5) # 장애물 없어짐 판단 threshold
-        self.declare_parameter('min_lidar', 0.5) # 라이다 최소 인식 거리
 
         # 장애물 감지 파라미터
         self.declare_parameter('front_angle_deg', 30.0) # 전방 감지 각도 (좌우로)
