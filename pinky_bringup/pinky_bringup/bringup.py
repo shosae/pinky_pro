@@ -17,8 +17,6 @@ from .dynamixel_driver import DynamixelDriver
 TWIST_SUB_TOPIC_NAME = "cmd_vel"
 ODOM_PUB_TOPIC_NAME = "odom"
 JOINT_PUB_TOPIC_NAME = "joint_states"
-ODOM_FRAME_ID = "odom"
-ODOM_CHILD_FRAME_ID = "base_footprint"
 
 SERIAL_PORT_NAME = "/dev/ttyAMA4"
 BAUDRATE = 1000000
@@ -40,6 +38,16 @@ class Pinky(Node):
     def __init__(self):
         super().__init__('pinky_bringup')
         self.is_initialized = False
+
+        self.declare_parameter('frame_prefix', '')
+        
+        frame_prefix = self.get_parameter('frame_prefix').value
+
+        if frame_prefix and not frame_prefix.endswith('/'):
+            frame_prefix += '/'
+        
+        self.odom_frame_id = frame_prefix + "odom"
+        self.base_frame_id = frame_prefix + "base_footprint"
 
         self.get_logger().info('Initializing Pinky Bringup Node with Dynamixel...')
         self.driver = DynamixelDriver(SERIAL_PORT_NAME, BAUDRATE, DYNAMIXEL_IDS)
@@ -155,8 +163,8 @@ class Pinky(Node):
     def _publish_tf(self, current_time):
         t = TransformStamped()
         t.header.stamp = current_time.to_msg()
-        t.header.frame_id = ODOM_FRAME_ID
-        t.child_frame_id = ODOM_CHILD_FRAME_ID
+        t.header.frame_id = self.odom_frame_id
+        t.child_frame_id = self.base_frame_id
         t.transform.translation.x = self.x
         t.transform.translation.y = self.y
         q = quaternion_from_euler(0, 0, self.theta)
@@ -166,8 +174,8 @@ class Pinky(Node):
     def _publish_odometry(self, current_time, v_x, vth):
         odom_msg = Odometry()
         odom_msg.header.stamp = current_time.to_msg()
-        odom_msg.header.frame_id = ODOM_FRAME_ID
-        odom_msg.child_frame_id = ODOM_CHILD_FRAME_ID
+        odom_msg.header.frame_id = self.odom_frame_id
+        odom_msg.child_frame_id = self.base_frame_id
         odom_msg.pose.pose.position.x, odom_msg.pose.pose.position.y = self.x, self.y
         q = quaternion_from_euler(0, 0, self.theta)
         odom_msg.pose.pose.orientation.x, odom_msg.pose.pose.orientation.y, odom_msg.pose.pose.orientation.z, odom_msg.pose.pose.orientation.w = q

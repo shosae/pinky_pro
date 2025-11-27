@@ -2,20 +2,24 @@
 
 <launch>
     <arg name="use_sim_time" default="False"/> 
+    <arg name="namespace" default=""/> 
 
     <include file="$(find-pkg-share pinky_description)/launch/upload_robot.launch.py">
         <arg name="use_sim_time" value="$(var use_sim_time)"/>
+        <arg name="namespace" value="$(var namespace)"/> 
     </include>
 
+    <push-ros-namespace namespace="$(var namespace)"/>
     <include file="$(find-pkg-share sllidar_ros2)/launch/sllidar_c1_launch.py">
         <arg name="serial_port" value="/dev/ttyAMA0"/>
-        <arg name="frame_id" value="rplidar_link"/>
+        <arg name="frame_id" value="$(var namespace)/rplidar_link"/>
         <arg name="inverted" value="false"/>
         <arg name="angle_compensate" value="true"/>
         <arg name="scan_mode" value="DenseBoost"/>
     </include>
-
+    
     <node pkg="pinky_bringup" exec="bringup">
+        <param name="frame_prefix" value="$(var namespace)"/>
     </node>
     
     <node pkg="pinky_bringup" exec="battery_publisher">
