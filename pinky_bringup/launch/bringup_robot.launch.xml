@@ -12,7 +12,7 @@
     <push-ros-namespace namespace="$(var namespace)"/>
     <include file="$(find-pkg-share sllidar_ros2)/launch/sllidar_c1_launch.py">
         <arg name="serial_port" value="/dev/ttyAMA0"/>
-        <arg name="frame_id" value="$(var namespace)/rplidar_link"/>
+        <arg name="frame_id" value="$(eval 'str(&quot;$(var namespace)/rplidar_link&quot;) if &quot;$(var namespace)&quot; else &quot;rplidar_link&quot;')"/>
         <arg name="inverted" value="false"/>
         <arg name="angle_compensate" value="true"/>
         <arg name="scan_mode" value="DenseBoost"/>
