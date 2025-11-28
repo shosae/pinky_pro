@@ -173,5 +173,15 @@ Or launch Nav2 web server
 ```
 ros2 launch pinky_navigation web_nav2.launch.xml map:=<map name>
 ```
+
+With custom IP address (Optional)
+```
+ros2 launch pinky_navigation web_nav2.launch.xml map:=<map name> ip:=0.0.0.0
+```
+
 ## Web Access
-[http://192.168.4.1:8080](http://192.168.4.1:8080)
+**Default:**
+[`http://192.168.4.1:8080`](http://192.168.4.1:8080)
+
+**If you specified a custom IP:**
+`http://<host_ip>:<port>`
