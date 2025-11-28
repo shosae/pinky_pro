@@ -60,6 +60,9 @@ def quat_to_yaw(q):
 class Nav2WebBridge(Node):
     def __init__(self):
         super().__init__("nav2_web_bridge_tf")
+        
+        self.declare_parameter("ip", "192.168.4.1")
+        self.declare_parameter("port", 8080)
 
         # ROS 데이터
         self.map_msg = None
@@ -405,11 +408,6 @@ def api_slam_save_map():
 # ROS 스레드
 ############################################################
 def ros_spin_thread():
-    global ros_node
-
-    rclpy.init()
-    ros_node = Nav2WebBridge()
-
     try:
         rclpy.spin(ros_node)
     finally:
@@ -421,11 +419,18 @@ def ros_spin_thread():
 # 메인 실행부
 ############################################################
 if __name__ == "__main__":
+    rclpy.init()    
+    
+    ros_node = Nav2WebBridge()
+
+    ip_param = ros_node.get_parameter("ip").value
+    port_param = ros_node.get_parameter("port").value
+
     # ROS2 스레드 시작
     t = threading.Thread(target=ros_spin_thread, daemon=True)
     t.start()
 
     time.sleep(1.0)
 
-    print("Flask Web Server (TF-based + SLAM) Running on http://192.168.4.1:8080")
-    app.run(host="192.168.4.1", port=8080, debug=False)
+    print(f"Flask Web Server Running on http://{ip_param}:{port_param}")
+    app.run(host=ip_param, port=int(port_param), debug=False)
