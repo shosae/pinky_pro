@@ -160,3 +160,18 @@ Available emotions: (hello, basic, angry, bored, fun, happy, interest, sad)
 ```
 ros2 service call /set_emotion pinky_interfaces/srv/Emotion "{emotion: 'happy'}"
 ```
+
+# 웹 서버
+## Start web server
+
+Launch SLAM web server
+```
+ros2 launch pinky_navigation web_slam.launch.xml
+```
+
+Or launch Nav2 web server
+```
+ros2 launch pinky_navigation web_nav2.launch.xml map:=<map name>
+```
+## Web Access
+[http://192.168.4.1:8080](http://192.168.4.1:8080)
