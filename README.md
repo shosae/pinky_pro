@@ -197,8 +197,11 @@ ros2 launch pinky_navigation gz_web_nav2.launch.xml map:=<map name> ip:=0.0.0.0
 ```
 
 ## Web Access
-**Default:**
+**Default (Real Robot):**
 [`http://192.168.4.1:8080`](http://192.168.4.1:8080)
+
+**Default (Simulation):**
+[`http://localhost:8080`](http://localhost:8080)
 
 **If you specified a custom IP:**
 `http://<host_ip>:<port>`
