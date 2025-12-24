@@ -98,11 +98,11 @@ ros2 launch pinky_gz_sim launch_sim.launch.xml
 ## Map building
 #### launch slam toolbox
 ```
-ros2 launch pinky_navigation map_building.launch.xml use_sim_time:=true
+ros2 launch pinky_navigation gz_map_building.launch.xml
 ```
 #### [ONLY PC] map view 
 ```
-ros2 launch pinky_navigation map_view.launch.xml
+ros2 launch pinky_navigation gz_map_view.launch.xml
 ```
 #### robot keyborad control
 ```
@@ -116,12 +116,12 @@ ros2 run nav2_map_server map_saver_cli -f <map name>
 ## Navigation2 
 #### launch navigation2
 ```
-ros2 launch pinky_navigation bringup_launch.xml map:=<map name> use_sim_time:=true
+ros2 launch pinky_navigation gz_bringup_launch.xml map:=<map name>
 ```
 
 #### [ONLY PC] nav2 view
 ```
-ros2 launch pinky_navigation nav2_view.launch.xml
+ros2 launch pinky_navigation gz_nav2_view.launch.xml
 ```
 
 # 센서 동작
@@ -165,7 +165,7 @@ ros2 service call /set_emotion pinky_interfaces/srv/Emotion "{emotion: 'happy'}"
 
 # 웹 서버
 ## Start web server
-
+### Real Robot
 Launch SLAM web server
 ```
 ros2 launch pinky_navigation web_slam.launch.xml
@@ -179,6 +179,21 @@ ros2 launch pinky_navigation web_nav2.launch.xml map:=<map name>
 With custom IP address (Optional)
 ```
 ros2 launch pinky_navigation web_nav2.launch.xml map:=<map name> ip:=0.0.0.0
+```
+### Simulation (Gazebo)
+Launch SLAM web server
+```
+ros2 launch pinky_navigation gz_web_slam.launch.xml
+```
+
+Or launch Nav2 web server
+```
+ros2 launch pinky_navigation gz_web_nav2.launch.xml map:=<map name>
+```
+
+With custom IP address (Optional)
+```
+ros2 launch pinky_navigation gz_web_nav2.launch.xml map:=<map name> ip:=0.0.0.0
 ```
 
 ## Web Access
