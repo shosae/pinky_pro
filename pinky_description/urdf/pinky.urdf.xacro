@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:macro name="insert_robot" params="namespace is_sim:=false sim_type:=gz_sim ros2_control:=false cam_tilt_deg screen_tilt_deg">
+    <xacro:macro name="insert_robot" params="namespace is_sim:=false cam_tilt_deg screen_tilt_deg">
         <xacro:include filename="$(find pinky_description)/urdf/common/insert_inertia.urdf.xacro"/>
-        <xacro:include filename="$(find pinky_description)/urdf/pinky_ros2_control.urdf.xacro"/>
 
         <link name="base_footprint"/>
         <link name="base_link">
@@ -297,13 +296,8 @@
         </joint>
 
         <xacro:if value="${is_sim}">
-            <xacro:if value="${sim_type == 'gz_sim'}">
-                <xacro:include filename="$(find pinky_description)/urdf/pinky_gz.urdf.xacro"/>
-                <xacro:insert_gz_sim namespace="${namespace}" ros2_control="${ros2_control}"/>
-            </xacro:if>
-        </xacro:if>
-        <xacro:if value="${ros2_control}">
-            <xacro:insert_ros2_control name="pinky" is_sim="${is_sim}" sim_type="${sim_type}"/>
+            <xacro:include filename="$(find pinky_description)/urdf/pinky_gz.urdf.xacro"/>
+            <xacro:insert_gz_sim namespace="${namespace}"/>
         </xacro:if>
     </xacro:macro>
 </robot>
