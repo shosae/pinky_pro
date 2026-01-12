@@ -10,9 +10,16 @@ ROS2 packages for Pinky Pro
 ## 💡 Pinky Pro 전용 GPT에게 모르는 건 물어보세요!
 * **[Pinky Assistants (ChatGPT)](https://chatgpt.com/g/g-69141c60b0908191975d16ce2421b768-pinky-pro-assistants)**
 
-## 📚 참고 자료 (Resources)
+## 📚 문서 및 가이드 (Documentation)
+* **[Pinky Pro 소개](https://github.com/pinklab-art/pinky_study/wiki)**
 
-* **[수업 자료 (Google Drive)](https://drive.google.com/drive/folders/1MeBp7xXAmHrNdEJYtsQ25DtCSrlwyAwC)**
+* **[초기 설정](https://github.com/pinklab-art/pinky_study/wiki/0.-%EC%B4%88%EA%B8%B0%EC%84%A4%EC%A0%95(PinkyPro))**
+
+* **[수업 자료 (Part 1)](https://github.com/pinklab-art/pinky_study/wiki/2.1-Pinky-Pro(part1))**
+
+* **[수업 자료 (Part 2)](https://github.com/pinklab-art/pinky_study/wiki/2.2-Pinky-Pro(part2))**
+
+* **[수업 자료 (Part 3)](https://github.com/pinklab-art/pinky_study/wiki/2.3-Pinky-Pro(part3))**
    
 
 ## 🙏 Special Thanks · Contributors
