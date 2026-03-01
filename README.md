@@ -19,7 +19,9 @@ ROS2 packages for Pinky Pro
 
 * **[수업 자료 (Part 2)](https://github.com/pinklab-art/pinky_study/wiki/2.2-Pinky-Pro(part2))**
 
-* **[수업 자료 (Part 3)](https://github.com/pinklab-art/pinky_study/wiki/2.3-Pinky-Pro(part3))**
+* **[수업 자료 (Part 3)](https://github.com/pinklab-art/pinky_study/wiki/2.3-Pinky-Pro(part3%E2%80%90%EC%8B%9C%EB%AE%AC%EB%A0%88%EC%9D%B4%EC%85%98))**
+
+* **[수업 자료 (Part 4)](https://github.com/pinklab-art/pinky_study/wiki/2.4-Pinky-Pro(part4%E2%80%90%EC%8B%A4%EB%AC%BC%EB%A1%9C%EB%B4%87%ED%99%9C%EC%9A%A9))**
    
 
 ## 🙏 Special Thanks · Contributors
