@@ -137,7 +137,7 @@ ros2 launch pinky_navigation gz_nav2_view.launch.xml
 ## LED control
 ### LED server start
 ```
-ros2 run pinky_emotion led_server
+ros2 run pinky_led led_server
 ```
 ### LED service call
 #### fill with color
