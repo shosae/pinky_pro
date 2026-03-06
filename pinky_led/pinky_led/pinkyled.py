@@ -2,9 +2,14 @@ import os
 import sys
 
 if os.geteuid() != 0:
-    os.system(f'sudo {sys.executable} {" ".join(sys.argv)}')
+    ros_setup = "/opt/ros/jazzy/setup.bash"
+    ws_setup = "/home/pinky/pinky_pro/install/setup.bash"
+    fastdds_xml = "/home/pinky/.fastdds.xml"
+    
+    cmd = f'sudo bash -c "export FASTRTPS_DEFAULT_PROFILES_FILE={fastdds_xml} && source {ros_setup} && source {ws_setup} && {sys.executable} {" ".join(sys.argv)}"'
+    
+    os.system(cmd)
     sys.exit()
-
 
 import time
 from rpi_ws281x import PixelStrip, Color
