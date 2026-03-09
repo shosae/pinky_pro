@@ -11,7 +11,7 @@ class BatteryPublisher(Node):
 
         self.percentage_publisher = self.create_publisher(
             Float32,
-            'battery/present',
+            'battery/percent',
             10
         )
         
