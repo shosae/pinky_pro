@@ -5,8 +5,9 @@ if os.geteuid() != 0:
     ros_setup = "/opt/ros/jazzy/setup.bash"
     ws_setup = "/home/pinky/pinky_pro/install/setup.bash"
     fastdds_xml = "/home/pinky/.fastdds.xml"
+    domain_id = os.environ.get('ROS_DOMAIN_ID', '0')
     
-    cmd = f'sudo bash -c "export FASTRTPS_DEFAULT_PROFILES_FILE={fastdds_xml} && source {ros_setup} && source {ws_setup} && {sys.executable} {" ".join(sys.argv)}"'
+    cmd = f'sudo bash -c "export FASTRTPS_DEFAULT_PROFILES_FILE={fastdds_xml} && export ROS_DOMAIN_ID={domain_id} && source {ros_setup} && source {ws_setup} && {sys.executable} {" ".join(sys.argv)}"'
     
     os.system(cmd)
     sys.exit()
