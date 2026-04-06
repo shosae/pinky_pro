@@ -125,7 +125,7 @@ controller_server:
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.03
+      xy_goal_tolerance: 0.05
       yaw_goal_tolerance: 0.1
 
     # Regulated Pure Pursuit 컨트롤러 설정
@@ -133,10 +133,10 @@ controller_server:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
 
       # ========= 기본 속도 =========
-      desired_linear_vel: 0.1           # 감속하지 않은 최대 속도
+      desired_linear_vel: 0.08           # 감속하지 않은 최대 속도
 
       # ========= Lookahead 거리 =========
-      lookahead_dist: 0.12               # 고정 lookahead 거리      
+      lookahead_dist: 0.14               # 고정 lookahead 거리      
 
       use_velocity_scaled_lookahead_dist: false  # lookahead의 거리를 속도에 비례해서 동적으로 계산
       lookahead_time: 1.0              # 속도에 곱할 시간
@@ -189,7 +189,7 @@ controller_server:
 local_costmap:
   local_costmap:
     ros__parameters:
-      footprint_padding: 0.0
+      footprint_padding: 0.02
       update_frequency: 5.0
       publish_frequency: 2.0
       global_frame: odom
@@ -273,6 +273,7 @@ global_costmap:
           clearing: True
           marking: True
           data_type: "LaserScan"
+          observation_persistance: 2.0
           raytrace_max_range: 3.0
           raytrace_min_range: 0.0
           obstacle_max_range: 2.5
@@ -282,8 +283,8 @@ global_costmap:
         map_subscribe_transient_local: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 2.0
-        inflation_radius: 0.075
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.15
       always_send_full_costmap: True
 
 # The yaml_filename does not need to be specified since it going to be set by defaults in launch.
