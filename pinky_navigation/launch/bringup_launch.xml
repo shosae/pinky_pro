@@ -15,6 +15,7 @@
     <arg name="lifecycle_nodes_nav" default="['controller_server',
                        'planner_server',
                        'behavior_server',
+                       'docking_server',
                        'bt_navigator',
                        'waypoint_follower',
                        'velocity_smoother']"/>

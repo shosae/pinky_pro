@@ -15,6 +15,7 @@
                        'planner_server',
                        'behavior_server',
                        'bt_navigator',
+                       'docking_server',
                        'waypoint_follower',
                        'velocity_smoother']"/>
     
@@ -65,6 +66,16 @@
             <remap from="/tf_static" to="tf_static"/>
             <remap from="cmd_vel" to="cmd_vel_nav"/>
         </composable_node>  
+
+        <composable_node pkg="opennav_docking" plugin="opennav_docking::DockingServer" name="docking_server">
+            <param from="$(var params_file)"/>
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="autostart" value="$(var autostart)"/>
+
+            <remap from="/tf" to="tf"/>
+            <remap from="/tf_static" to="tf_static"/>
+            <remap from="cmd_vel" to="cmd_vel_nav"/>
+        </composable_node>
 
         <composable_node pkg="nav2_waypoint_follower" plugin="nav2_waypoint_follower::WaypointFollower" name="waypoint_follower">            
             <param from="$(var params_file)"/>
@@ -144,6 +155,17 @@
 
             <remap from="/tf" to="tf"/>
             <remap from="/tf_static" to="tf_static"/>
+        </node>
+
+        <node pkg="opennav_docking" exec="opennav_docking" name="docking_server" output="screen">
+            <param name='respawn' value="$(var use_respawn)"/>
+            <param name='respawn_delay' value="2.0"/>
+            <param name='log_level' value="$(var log_level)"/>
+            <param from="$(var params_file)"/>
+
+            <remap from="/tf" to="tf"/>
+            <remap from="/tf_static" to="tf_static"/>
+            <remap from="cmd_vel" to="cmd_vel_nav"/>
         </node>
 
         <node pkg="nav2_waypoint_follower" exec="waypoint_follower" name="waypoint_follower" output="screen">
