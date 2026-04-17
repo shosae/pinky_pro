@@ -1,7 +1,0 @@
-<class_libraries>
-  <library path="pinky_april_dock">
-    <class type="pinky_docking_plugins::AprilDock" base_class_type="opennav_docking_core::ChargingDock">
-      <description>AprilTag-based non-charging dock plugin for Pinky.</description>
-    </class>
-  </library>
-</class_libraries>
