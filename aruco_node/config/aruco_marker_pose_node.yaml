@@ -8,7 +8,7 @@
     rotate_180: true
     orientation_yaw_offset: 1.57
     aruco_dictionary: DICT_4X4_100
-    marker_length: 0.1
+    marker_length: 0.05
     target_marker_id: 0
     camera_matrix_path: /home/pinky/pinky_pro/src/pinky_pro/aruco_node/config/calibration_matrix.npy
     distortion_coeffs_path: /home/pinky/pinky_pro/src/pinky_pro/aruco_node/config/distortion_coefficients.npy
