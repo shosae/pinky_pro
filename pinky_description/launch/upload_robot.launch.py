@@ -13,8 +13,10 @@ def generate_launch_description():
     cam_tilt_deg = DeclareLaunchArgument("cam_tilt_deg", default_value="0")
     frame_prefix_arg = DeclareLaunchArgument("frame_prefix", default_value="")
 
-    joint_name_prefix = PythonExpression([
-        "'", LaunchConfiguration('namespace'), "' + ('/' if '", LaunchConfiguration('namespace'), "' != '' else '')"
+    resolved_frame_prefix = PythonExpression([
+        "'", LaunchConfiguration('frame_prefix'), "' if '", LaunchConfiguration('frame_prefix'),
+        "' != '' else ('", LaunchConfiguration('namespace'),
+        "' + ('/' if '", LaunchConfiguration('namespace'), "' != '' else ''))"
     ])
 
     rsp_node = Node(
@@ -32,16 +34,11 @@ def generate_launch_description():
                         get_package_share_directory('pinky_description'),
                         'urdf/robot.urdf.xacro',
                     ]),
-                    ' namespace:=', joint_name_prefix,
+                    ' namespace:=', resolved_frame_prefix,
                     ' is_sim:=', LaunchConfiguration('is_sim'),
                     ' cam_tilt_deg:=', LaunchConfiguration('cam_tilt_deg')
                 ]),
-            'frame_prefix': LaunchConfiguration('frame_prefix'),
         }],
-        remappings=[
-            ('/tf', 'tf'),
-            ('/tf_static', 'tf_static'),
-        ]
     )
 
     jsp_node = Node(

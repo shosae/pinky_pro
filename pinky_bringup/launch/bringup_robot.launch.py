@@ -25,7 +25,7 @@ def _launch_setup(context, *args, **kwargs):
     config_path = LaunchConfiguration("robot_config_file").perform(context)
     cli_namespace = LaunchConfiguration("namespace").perform(context).strip()
     namespace = cli_namespace or _load_namespace(config_path)
-    joint_prefix = f"{namespace}/" if namespace else ""
+    frame_prefix = f"{namespace}/" if namespace else ""
 
     return [
         IncludeLaunchDescription(
@@ -39,12 +39,14 @@ def _launch_setup(context, *args, **kwargs):
             launch_arguments={
                 "namespace": namespace,
                 "use_sim_time": LaunchConfiguration("use_sim_time").perform(context),
+                "frame_prefix": frame_prefix,
                 "wheel_radius": LaunchConfiguration("wheel_radius").perform(context),
                 "wheel_separation": LaunchConfiguration("wheel_separation").perform(context),
-                "odom_frame_id": "odom",
-                "base_frame_id": "base_footprint",
-                "left_joint_name": f"{joint_prefix}l_wheel_joint",
-                "right_joint_name": f"{joint_prefix}r_wheel_joint",
+                "odom_frame_id": f"{frame_prefix}odom",
+                "base_frame_id": f"{frame_prefix}base_footprint",
+                "lidar_frame_id": f"{frame_prefix}rplidar_link",
+                "left_joint_name": f"{frame_prefix}l_wheel_joint",
+                "right_joint_name": f"{frame_prefix}r_wheel_joint",
             }.items(),
         )
     ]

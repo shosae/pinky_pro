@@ -6,6 +6,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import FrontendLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
+from nav2_common.launch import RewrittenYaml
 
 
 def _load_namespace(config_path):
@@ -25,6 +26,28 @@ def _launch_setup(context, *args, **kwargs):
     config_path = LaunchConfiguration("robot_config_file").perform(context)
     cli_namespace = LaunchConfiguration("namespace").perform(context).strip()
     namespace = cli_namespace or _load_namespace(config_path)
+    params_file = LaunchConfiguration("params_file").perform(context)
+
+    configured_params = params_file
+    if namespace:
+        frame_prefix = f"{namespace}/"
+        configured_params = RewrittenYaml(
+            source_file=params_file,
+            root_key=namespace,
+            param_rewrites={
+                "amcl.ros__parameters.base_frame_id": f"{frame_prefix}base_footprint",
+                "amcl.ros__parameters.odom_frame_id": f"{frame_prefix}odom",
+                "bt_navigator.ros__parameters.robot_base_frame": f"{frame_prefix}base_link",
+                "local_costmap.local_costmap.ros__parameters.global_frame": f"{frame_prefix}odom",
+                "local_costmap.local_costmap.ros__parameters.robot_base_frame": f"{frame_prefix}base_footprint",
+                "global_costmap.global_costmap.ros__parameters.robot_base_frame": f"{frame_prefix}base_footprint",
+                "behavior_server.ros__parameters.local_frame": f"{frame_prefix}odom",
+                "behavior_server.ros__parameters.robot_base_frame": f"{frame_prefix}base_footprint",
+                "docking_server.ros__parameters.base_frame": f"{frame_prefix}base_footprint",
+                "docking_server.ros__parameters.fixed_frame": f"{frame_prefix}odom",
+            },
+            convert_types=True,
+        )
 
     return [
         IncludeLaunchDescription(
@@ -39,7 +62,7 @@ def _launch_setup(context, *args, **kwargs):
                 "namespace": namespace,
                 "map": LaunchConfiguration("map").perform(context),
                 "use_sim_time": LaunchConfiguration("use_sim_time").perform(context),
-                "params_file": LaunchConfiguration("params_file").perform(context),
+                "params_file": configured_params,
                 "autostart": LaunchConfiguration("autostart").perform(context),
                 "container_name": LaunchConfiguration("container_name").perform(context),
                 "use_composition": LaunchConfiguration("use_composition").perform(context),
