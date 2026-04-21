@@ -1,9 +1,6 @@
-import os
-from os import environ
-
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, Shutdown
-from launch.substitutions import LaunchConfiguration, Command, TextSubstitution
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 from launch.substitutions import PathJoinSubstitution, PythonExpression
@@ -14,8 +11,9 @@ def generate_launch_description():
     namespace_arg = DeclareLaunchArgument("namespace", default_value="")
     is_sim = DeclareLaunchArgument("is_sim", default_value="false")
     cam_tilt_deg = DeclareLaunchArgument("cam_tilt_deg", default_value="0")
+    frame_prefix_arg = DeclareLaunchArgument("frame_prefix", default_value="")
 
-    namespace = PythonExpression([
+    joint_name_prefix = PythonExpression([
         "'", LaunchConfiguration('namespace'), "' + ('/' if '", LaunchConfiguration('namespace'), "' != '' else '')"
     ])
 
@@ -34,12 +32,16 @@ def generate_launch_description():
                         get_package_share_directory('pinky_description'),
                         'urdf/robot.urdf.xacro',
                     ]),
-                    ' namespace:=', namespace,
+                    ' namespace:=', joint_name_prefix,
                     ' is_sim:=', LaunchConfiguration('is_sim'),
                     ' cam_tilt_deg:=', LaunchConfiguration('cam_tilt_deg')
                 ]),
-            'frame_prefix': [namespace],
-        }]
+            'frame_prefix': LaunchConfiguration('frame_prefix'),
+        }],
+        remappings=[
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static'),
+        ]
     )
 
     jsp_node = Node(
@@ -61,6 +63,7 @@ def generate_launch_description():
     ld.add_action(namespace_arg)
     ld.add_action(is_sim)
     ld.add_action(cam_tilt_deg)
+    ld.add_action(frame_prefix_arg)
     ld.add_action(rsp_node)
     ld.add_action(jsp_node)
 

@@ -17,15 +17,13 @@ from .dynamixel_driver import DynamixelDriver
 TWIST_SUB_TOPIC_NAME = "cmd_vel"
 ODOM_PUB_TOPIC_NAME = "odom"
 JOINT_PUB_TOPIC_NAME = "joint_states"
-ODOM_FRAME_ID = "odom"
-ODOM_CHILD_FRAME_ID = "base_footprint"
 
 SERIAL_PORT_NAME = "/dev/ttyAMA5"
 BAUDRATE = 1000000
 DYNAMIXEL_IDS = [1, 2] # [왼쪽 바퀴 ID, 오른쪽 바퀴 ID]
 
-JOINT_NAME_WHEEL_L = "left_wheel_joint"
-JOINT_NAME_WHEEL_R = "right_wheel_joint"
+DEFAULT_JOINT_NAME_WHEEL_L = "l_wheel_joint"
+DEFAULT_JOINT_NAME_WHEEL_R = "r_wheel_joint"
 
 PULSE_PER_ROT = 4096 
 RPM2RAD = 2 * math.pi / 60
@@ -42,9 +40,17 @@ class Pinky(Node):
         
         self.declare_parameter('wheel_radius', 0.027)
         self.declare_parameter('wheel_separation', 0.0961)
+        self.declare_parameter('odom_frame_id', 'odom')
+        self.declare_parameter('base_frame_id', 'base_footprint')
+        self.declare_parameter('left_joint_name', DEFAULT_JOINT_NAME_WHEEL_L)
+        self.declare_parameter('right_joint_name', DEFAULT_JOINT_NAME_WHEEL_R)
         
         self.wheel_radius = self.get_parameter('wheel_radius').get_parameter_value().double_value
         self.wheel_separation = self.get_parameter('wheel_separation').get_parameter_value().double_value
+        self.odom_frame_id = self.get_parameter('odom_frame_id').get_parameter_value().string_value
+        self.base_frame_id = self.get_parameter('base_frame_id').get_parameter_value().string_value
+        self.left_joint_name = self.get_parameter('left_joint_name').get_parameter_value().string_value
+        self.right_joint_name = self.get_parameter('right_joint_name').get_parameter_value().string_value
         
         self.get_logger().info(f'Wheel radius: {self.wheel_radius}')
         self.get_logger().info(f'Wheel separation: {self.wheel_separation}')
@@ -163,8 +169,8 @@ class Pinky(Node):
     def _publish_tf(self, current_time):
         t = TransformStamped()
         t.header.stamp = current_time.to_msg()
-        t.header.frame_id = ODOM_FRAME_ID
-        t.child_frame_id = ODOM_CHILD_FRAME_ID
+        t.header.frame_id = self.odom_frame_id
+        t.child_frame_id = self.base_frame_id
         t.transform.translation.x = self.x
         t.transform.translation.y = self.y
         q = quaternion_from_euler(0, 0, self.theta)
@@ -174,8 +180,8 @@ class Pinky(Node):
     def _publish_odometry(self, current_time, v_x, vth):
         odom_msg = Odometry()
         odom_msg.header.stamp = current_time.to_msg()
-        odom_msg.header.frame_id = ODOM_FRAME_ID
-        odom_msg.child_frame_id = ODOM_CHILD_FRAME_ID
+        odom_msg.header.frame_id = self.odom_frame_id
+        odom_msg.child_frame_id = self.base_frame_id
         odom_msg.pose.pose.position.x, odom_msg.pose.pose.position.y = self.x, self.y
         q = quaternion_from_euler(0, 0, self.theta)
         odom_msg.pose.pose.orientation.x, odom_msg.pose.pose.orientation.y, odom_msg.pose.pose.orientation.z, odom_msg.pose.pose.orientation.w = q
@@ -185,7 +191,7 @@ class Pinky(Node):
     def _publish_joint_states(self, current_time, rpm_l, rpm_r):
         joint_msg = JointState()
         joint_msg.header.stamp = current_time.to_msg()
-        joint_msg.name = [JOINT_NAME_WHEEL_L, JOINT_NAME_WHEEL_R]
+        joint_msg.name = [self.left_joint_name, self.right_joint_name]
         
         pos_l_rad = (self.last_encoder_l / PULSE_PER_ROT) * (2 * math.pi)
         pos_r_rad = (self.last_encoder_r / PULSE_PER_ROT) * (2 * math.pi)
