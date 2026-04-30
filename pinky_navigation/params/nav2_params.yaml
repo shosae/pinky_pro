@@ -125,8 +125,8 @@ controller_server:
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.05
-      yaw_goal_tolerance: 0.1
+      xy_goal_tolerance: 0.03
+      yaw_goal_tolerance: 0.07
 
     # Regulated Pure Pursuit 컨트롤러 설정
     FollowPath:
@@ -136,7 +136,7 @@ controller_server:
       desired_linear_vel: 0.08           # 감속하지 않은 최대 속도
 
       # ========= Lookahead 거리 =========
-      lookahead_dist: 0.14               # 고정 lookahead 거리      
+      lookahead_dist: 0.1               # 고정 lookahead 거리      
 
       use_velocity_scaled_lookahead_dist: false  # lookahead의 거리를 속도에 비례해서 동적으로 계산
       lookahead_time: 1.0              # 속도에 곱할 시간
@@ -167,7 +167,7 @@ controller_server:
 
       # ========= 회전 관련 =========
       use_rotate_to_heading: true             # 경로 추종 전에 회전할것인지
-      rotate_to_heading_min_angle: 0.785      # 약 45도
+      rotate_to_heading_min_angle: 0.7      # 약 45도
       rotate_to_heading_angular_vel: 1.0      # 제자리 회전 시 각속도
       max_angular_accel: 2.0                  # 회전 가감속 한계
       allow_reversing: false                  # 경로 추종할 때 후진을 할 것인지
@@ -189,7 +189,7 @@ controller_server:
 local_costmap:
   local_costmap:
     ros__parameters:
-      footprint_padding: 0.02
+      footprint_padding: 0.0
       update_frequency: 5.0
       publish_frequency: 2.0
       global_frame: odom
@@ -216,7 +216,7 @@ local_costmap:
         mark_threshold: 0
         observation_sources: scan
         scan:
-          topic: /scan
+          topic: <robot_namespace>/scan
           max_obstacle_height: 2.0
           clearing: True
           marking: True
@@ -268,7 +268,7 @@ global_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          topic: /scan
+          topic: <robot_namespace>/scan
           max_obstacle_height: 2.0
           clearing: True
           marking: True
@@ -363,3 +363,131 @@ velocity_smoother:
     deadband_velocity: [0.0, 0.0, 0.0]
     velocity_timeout: 1.0
     enable_stamped_cmd_vel: false
+
+docking_server:
+  ros__parameters:
+    controller_frequency: 20.0  # 도킹 제어 루프 주기(Hz)
+    initial_perception_timeout: 5.0  # 초기 도크 인식 대기 시간
+    wait_charge_timeout: 5.0  # 충전 시작 대기 시간, non-charging 테스트에서는 큰 의미 없음
+    dock_approach_timeout: 1000.0  # 근접 도킹 단계 최대 허용 시간
+    undock_linear_tolerance: 0.01  # 언도킹 시 staging pose 도달로 볼 선형 오차
+    undock_angular_tolerance: 0.05  # 언도킹 시 staging pose 도달로 볼 각도 오차
+    max_retries: 3  # 복구 가능한 실패 발생 시 재시도 횟수
+    base_frame: "base_footprint"  # 로봇 기준 프레임  
+    fixed_frame: "odom"  # 도크 pose를 추적하는 고정 프레임
+    dock_backwards: false  # true이면 후진 도킹 수행
+    dock_prestaging_tolerance: 0.5  # staging pose 근처면 네비게이션 생략하는 거리 기준
+
+    dock_plugins: ["aruco_dock"]  # 사용할 dock plugin 인스턴스 목록
+    docks:
+      [
+        "ToINSP",
+        "ToSHIP",
+        "ToCAST1",
+        "ToCAST2",
+        "ToCHG1",
+        "ToCHG2",
+        "ToCHG3",
+        "ToSTRG1",
+        "ToSTRG2",
+        "ToPP1",
+        "ToPP2"
+      ]  # dock_id로 선택할 수 있는 dock 인스턴스 목록
+
+    aruco_dock:
+      plugin: "opennav_docking::SimpleNonChargingDock"
+      use_external_detection_pose: true  # 외부 detector pose 사용
+      external_detection_timeout: 30.0  # detection timeout
+      external_detection_translation_x: -0.04  # 마커 기준 최종 dock pose 오프셋
+      external_detection_translation_y: 0.0
+      external_detection_rotation_pitch: 0.0
+      external_detection_rotation_roll: 0.0
+      filter_coef: 0.3
+      use_stall_detection: false
+      docking_threshold: 0.05
+      staging_x_offset: -0.1  # 최종 dock pose 기준 staging pose
+      staging_yaw_offset: 0.0
+
+    ToINSP:
+      type: "aruco_dock"  # 이 dock 인스턴스가 사용할 dock plugin 타입
+      frame: "map"  # 이 dock pose가 표현된 기준 프레임
+      pose: [-0.67, -0.15, -1.57]  # [x, y, theta]
+      id: "ToINSP"  # plugin에서 필요 시 사용할 수 있는 선택적 식별자
+
+    ToSHIP:
+      type: "aruco_dock"  # 이 dock 인스턴스가 사용할 dock plugin 타입
+      frame: "map"  # 이 dock pose가 표현된 기준 프레임
+      pose: [-0.67, 0.12, 1.57]  # [x, y, theta]
+      id: "ToSHIP"  # plugin에서 필요 시 사용할 수 있는 선택적 식별자
+
+    ToCAST1:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.28, 0.2, 1.57]
+      id: "ToCAST1"
+
+    ToCAST2:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.413, 0.2, 1.57]
+      id: "ToCAST2"
+
+    ToCHG1:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [0.06, 0.095, 0.0]
+      id: "ToCHG1"
+
+    ToCHG2:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [0.06, -0.027, 0.0]
+      id: "ToCHG2"
+
+    ToCHG3:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [0.06, -0.179, 0.0]
+      id: "ToCHG3"
+
+    ToSTRG1:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.136, -0.587, 0.0]
+      id: "ToSTRG1"
+
+    ToSTRG2:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.223, -0.5, -1.57]
+      id: "ToSTRG2"
+
+    ToPP1:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.48, -1.05, 3.14]
+      id: "ToPP1"
+
+    ToPP2:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.48, -1.13, 3.14]
+      id: "ToPP2"
+
+
+    controller:
+      k_phi: 3.0  # heading 보정 gain
+      k_delta: 2.0  # 곡률/추종 특성 gain
+      beta: 0.4  # 제어기 수렴 특성 파라미터
+      lambda: 2.0  # 제어기 감쇠/공격성 파라미터
+      v_linear_min: 0.02  # 도킹 중 최소 선속도
+      v_linear_max: 0.04 # 도킹 중 최대 선속도
+      v_angular_max: 3.5  # 도킹 중 최대 각속도
+      slowdown_radius: 0.07  # 목표 근처에서 감속 시작하는 반경
+      use_collision_detection: true  # local costmap 기반 충돌 검사 사용 여부
+      costmap_topic: "local_costmap/costmap_raw"  # 충돌 검사에 사용할 costmap topic
+      footprint_topic: "local_costmap/published_footprint"  # 충돌 검사에 사용할 footprint topic
+      transform_tolerance: 0.8  # TF 조회 허용 오차
+      projection_time: 0.6  # 충돌 검사용 trajectory 예측 시간
+      simulation_time_step: 0.1  # trajectory 시뮬레이션 시간 간격
+      dock_collision_threshold: 0.3  # 도크 근처 충돌 검사 예외 거리 기준
