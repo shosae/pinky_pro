@@ -133,10 +133,10 @@ controller_server:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
 
       # ========= 기본 속도 =========
-      desired_linear_vel: 0.12           # 감속하지 않은 최대 속도
+      desired_linear_vel: 0.08           # 감속하지 않은 최대 속도
 
       # ========= Lookahead 거리 =========
-      lookahead_dist: 0.14               # 고정 lookahead 거리      
+      lookahead_dist: 0.1               # 고정 lookahead 거리      
 
       use_velocity_scaled_lookahead_dist: false  # lookahead의 거리를 속도에 비례해서 동적으로 계산
       lookahead_time: 1.0              # 속도에 곱할 시간
@@ -167,7 +167,7 @@ controller_server:
 
       # ========= 회전 관련 =========
       use_rotate_to_heading: true             # 경로 추종 전에 회전할것인지
-      rotate_to_heading_min_angle: 0.785      # 약 45도
+      rotate_to_heading_min_angle: 0.7      # 약 45도
       rotate_to_heading_angular_vel: 1.0      # 제자리 회전 시 각속도
       max_angular_accel: 2.0                  # 회전 가감속 한계
       allow_reversing: false                  # 경로 추종할 때 후진을 할 것인지
@@ -376,37 +376,103 @@ docking_server:
     base_frame: "base_footprint"  # 로봇 기준 프레임  
     fixed_frame: "odom"  # 도크 pose를 추적하는 고정 프레임
     dock_backwards: false  # true이면 후진 도킹 수행
-    dock_prestaging_tolerance: 0.1  # staging pose 근처면 네비게이션 생략하는 거리 기준
+    dock_prestaging_tolerance: 0.5  # staging pose 근처면 네비게이션 생략하는 거리 기준
 
-    dock_plugins: ["test_dock"]  # 사용할 dock plugin 인스턴스 목록
-    docks: ["dock1", "dock2"]  # dock_id로 선택할 수 있는 dock 인스턴스 목록
+    dock_plugins: ["aruco_dock"]  # 사용할 dock plugin 인스턴스 목록
+    docks:
+      [
+        "ToINSP",
+        "ToSHIP",
+        "ToCAST1",
+        "ToCAST2",
+        "ToCHG1",
+        "ToCHG2",
+        "ToCHG3",
+        "ToSTRG1",
+        "ToSTRG2",
+        "ToPP1",
+        "ToPP2"
+      ]  # dock_id로 선택할 수 있는 dock 인스턴스 목록
 
-    test_dock:
+    aruco_dock:
       plugin: "opennav_docking::SimpleNonChargingDock"
       use_external_detection_pose: true  # 외부 detector pose 사용
       external_detection_timeout: 30.0  # detection timeout
-      external_detection_translation_x: -0.05  # 마커 기준 최종 dock pose 오프셋
+      external_detection_translation_x: -0.04  # 마커 기준 최종 dock pose 오프셋
       external_detection_translation_y: 0.0
-      external_detection_rotation_yaw: 0.0
       external_detection_rotation_pitch: 0.0
       external_detection_rotation_roll: 0.0
       filter_coef: 0.3
       use_stall_detection: false
-      docking_threshold: 0.02
+      docking_threshold: 0.05
       staging_x_offset: -0.1  # 최종 dock pose 기준 staging pose
       staging_yaw_offset: 0.0
 
-    dock1:
-      type: "test_dock"  # 이 dock 인스턴스가 사용할 dock plugin 타입
+    ToINSP:
+      type: "aruco_dock"  # 이 dock 인스턴스가 사용할 dock plugin 타입
       frame: "map"  # 이 dock pose가 표현된 기준 프레임
-      pose: [0.1, -0.2, -1.57]  # [x, y, theta]
-      id: "dock1"  # plugin에서 필요 시 사용할 수 있는 선택적 식별자
+      pose: [-0.67, -0.15, -1.57]  # [x, y, theta]
+      id: "ToINSP"  # plugin에서 필요 시 사용할 수 있는 선택적 식별자
 
-    dock2:
-      type: "test_dock"  # 이 dock 인스턴스가 사용할 dock plugin 타입
+    ToSHIP:
+      type: "aruco_dock"  # 이 dock 인스턴스가 사용할 dock plugin 타입
       frame: "map"  # 이 dock pose가 표현된 기준 프레임
-      pose: [0.0, 0.59, 3.14]  # [x, y, theta]
-      id: "dock2"  # plugin에서 필요 시 사용할 수 있는 선택적 식별자
+      pose: [-0.67, 0.12, 1.57]  # [x, y, theta]
+      id: "ToSHIP"  # plugin에서 필요 시 사용할 수 있는 선택적 식별자
+
+    ToCAST1:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.28, 0.2, 1.57]
+      id: "ToCAST1"
+
+    ToCAST2:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.413, 0.2, 1.57]
+      id: "ToCAST2"
+
+    ToCHG1:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [0.06, 0.095, 0.0]
+      id: "ToCHG1"
+
+    ToCHG2:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [0.06, -0.027, 0.0]
+      id: "ToCHG2"
+
+    ToCHG3:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [0.06, -0.179, 0.0]
+      id: "ToCHG3"
+
+    ToSTRG1:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.136, -0.587, 0.0]
+      id: "ToSTRG1"
+
+    ToSTRG2:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.223, -0.5, -1.57]
+      id: "ToSTRG2"
+
+    ToPP1:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.48, -1.05, 3.14]
+      id: "ToPP1"
+
+    ToPP2:
+      type: "aruco_dock"
+      frame: "map"
+      pose: [-0.48, -1.13, 3.14]
+      id: "ToPP2"
 
 
     controller:
@@ -421,7 +487,7 @@ docking_server:
       use_collision_detection: true  # local costmap 기반 충돌 검사 사용 여부
       costmap_topic: "local_costmap/costmap_raw"  # 충돌 검사에 사용할 costmap topic
       footprint_topic: "local_costmap/published_footprint"  # 충돌 검사에 사용할 footprint topic
-      transform_tolerance: 0.6  # TF 조회 허용 오차
+      transform_tolerance: 0.8  # TF 조회 허용 오차
       projection_time: 0.6  # 충돌 검사용 trajectory 예측 시간
       simulation_time_step: 0.1  # trajectory 시뮬레이션 시간 간격
       dock_collision_threshold: 0.3  # 도크 근처 충돌 검사 예외 거리 기준
