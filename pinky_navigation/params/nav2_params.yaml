@@ -167,7 +167,7 @@ controller_server:
 
       # ========= 회전 관련 =========
       use_rotate_to_heading: true             # 경로 추종 전에 회전할것인지
-      rotate_to_heading_min_angle: 0.7      # 약 45도
+      rotate_to_heading_min_angle: 0.7        # 약 40도
       rotate_to_heading_angular_vel: 1.0      # 제자리 회전 시 각속도
       max_angular_accel: 2.0                  # 회전 가감속 한계
       allow_reversing: false                  # 경로 추종할 때 후진을 할 것인지
@@ -379,19 +379,33 @@ docking_server:
     dock_prestaging_tolerance: 0.5  # staging pose 근처면 네비게이션 생략하는 거리 기준
 
     dock_plugins: ["aruco_dock"]  # 사용할 dock plugin 인스턴스 목록
+    # docks:
+    #   [
+    #     "ToINSP",
+    #     "ToSHIP",
+    #     "ToCAST1",
+    #     "ToCAST2",
+    #     "ToCHG1",
+    #     "ToCHG2",
+    #     "ToCHG3",
+    #     "ToSTRG1",
+    #     "ToSTRG2",
+    #     "ToPP1",
+    #     "ToPP2"
+    #   ]  # dock_id로 선택할 수 있는 dock 인스턴스 목록
     docks:
       [
         "ToINSP",
         "ToSHIP",
-        "ToCAST1",
-        "ToCAST2",
+        "ToCAST",
+        "ToCAST_WAIT",
         "ToCHG1",
         "ToCHG2",
         "ToCHG3",
-        "ToSTRG1",
-        "ToSTRG2",
-        "ToPP1",
-        "ToPP2"
+        "ToSTRG",
+        "ToPICK",
+        "ToPP",
+        "ToPP_WAIT"
       ]  # dock_id로 선택할 수 있는 dock 인스턴스 목록
 
     aruco_dock:
@@ -411,69 +425,68 @@ docking_server:
     ToINSP:
       type: "aruco_dock"  # 이 dock 인스턴스가 사용할 dock plugin 타입
       frame: "map"  # 이 dock pose가 표현된 기준 프레임
-      pose: [-0.67, -0.15, -1.57]  # [x, y, theta]
+      pose: [-0.67, -0.10, -1.57]  # [x, y, theta]
       id: "ToINSP"  # plugin에서 필요 시 사용할 수 있는 선택적 식별자
 
     ToSHIP:
       type: "aruco_dock"  # 이 dock 인스턴스가 사용할 dock plugin 타입
       frame: "map"  # 이 dock pose가 표현된 기준 프레임
-      pose: [-0.67, 0.12, 1.57]  # [x, y, theta]
+      pose: [-0.67, 0.45, 1.57]  # [x, y, theta]
       id: "ToSHIP"  # plugin에서 필요 시 사용할 수 있는 선택적 식별자
 
-    ToCAST1:
+    ToCAST:
       type: "aruco_dock"
       frame: "map"
-      pose: [-0.28, 0.2, 1.57]
-      id: "ToCAST1"
+      pose: [-0.256, 0.2, 1.57]
+      id: "ToCAST"
 
-    ToCAST2:
+    ToCAST_WAIT:
       type: "aruco_dock"
       frame: "map"
       pose: [-0.413, 0.2, 1.57]
-      id: "ToCAST2"
+      id: "ToCAST_WAIT"
 
     ToCHG1:
       type: "aruco_dock"
       frame: "map"
-      pose: [0.06, 0.095, 0.0]
+      pose: [0.044, 0.095, 0.0]
       id: "ToCHG1"
 
     ToCHG2:
       type: "aruco_dock"
       frame: "map"
-      pose: [0.06, -0.027, 0.0]
+      pose: [0.044, -0.027, 0.0]
       id: "ToCHG2"
 
     ToCHG3:
       type: "aruco_dock"
       frame: "map"
-      pose: [0.06, -0.179, 0.0]
+      pose: [0.044, -0.179, 0.0]
       id: "ToCHG3"
 
-    ToSTRG1:
+    ToSTRG:
+      type: "STRG_dock"
+      frame: "map"
+      pose: [-0.1, -0.465, -1.57]
+      id: "ToSTRG"
+
+    ToPICK:
       type: "aruco_dock"
       frame: "map"
-      pose: [-0.136, -0.587, 0.0]
-      id: "ToSTRG1"
+      pose: [-0.223, -0.465, -1.57]
+      id: "ToPICK"
 
-    ToSTRG2:
+    ToPP:
       type: "aruco_dock"
       frame: "map"
-      pose: [-0.223, -0.5, -1.57]
-      id: "ToSTRG2"
+      pose: [-0.447, -1.05, 3.14]
+      id: "ToPP"
 
-    ToPP1:
+    ToPP_WAIT:
       type: "aruco_dock"
       frame: "map"
-      pose: [-0.48, -1.05, 3.14]
-      id: "ToPP1"
-
-    ToPP2:
-      type: "aruco_dock"
-      frame: "map"
-      pose: [-0.48, -1.13, 3.14]
-      id: "ToPP2"
-
+      pose: [-0.447, -1.13, 3.14]
+      id: "ToPP_WAIT"
 
     controller:
       k_phi: 3.0  # heading 보정 gain
